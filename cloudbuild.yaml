@@ -1,4 +1,30 @@
 steps:
-- name: node
-  entrypoint: npm
-  args: ['install']
+# Docker Build
+- name: 'gcr.io/cloud-builders/docker'
+  # Path to docker image in the Artifact Registry
+  # '${_LOCATION}-docker.pkg.dev/$PROJECT_ID/${_REPOSITORY}/${_IMAGE}'
+  args: [
+    'build', '-t',
+    'europe-west1-docker.pkg.dev/$PROJECT_ID/cloud-build-demo-repo/demo-image',
+    '.'
+  ]
+# Docker Push
+- name: 'gcr.io/cloud-builders/docker'
+  args: [
+    'push',
+    'europe-west1-docker.pkg.dev/$PROJECT_ID/cloud-build-demo-repo/demo-image',
+  ]
+# Deploy container image to Cloud Run
+- name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
+  entrypoint: 'gcloud'
+  args: [
+    'run',
+    'deploy',
+    '.',
+    '--image',
+    'europe-west1-docker.pkg.dev/$PROJECT_ID/cloud-build-demo-repo/demo-image',
+    '--region',
+    'europe-west1'
+  ]
+images:
+  - europe-west1-docker.pkg.dev/$PROJECT_ID/cloud-build-demo-repo/demo-image
