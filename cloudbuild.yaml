@@ -20,7 +20,7 @@ steps:
   args: [
     'run',
     'deploy',
-    '.',
+    'nodejs-cloudrun',
     '--image',
     'europe-west1-docker.pkg.dev/$PROJECT_ID/cloud-build-demo-repo/demo-image',
     '--region',
